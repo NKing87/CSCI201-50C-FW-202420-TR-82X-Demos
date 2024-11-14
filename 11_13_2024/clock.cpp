@@ -333,10 +333,48 @@ bool clockType::operator>(const clockType &rightHandClock) const
 
 bool clockType::operator<(const clockType &rightHandClock) const
 {
+    int cmpH, cmpOH;
+    if (this->format == TWELVE)
+    {
+        cmpH = (this->timeOfDay == AM && hr != 12) ? hr : ((this->timeOfDay == AM && hr == 12) ? 0 : ((hr == 12) ? hr : hr + 12));
+    }
+    else
+    {
+        cmpH = hr;
+    }
+    if (rightHandClock.format == TWELVE)
+    {
+        cmpOH = (rightHandClock.timeOfDay == AM && rightHandClock.hr != 12) ? rightHandClock.hr : ((rightHandClock.timeOfDay == AM && rightHandClock.hr == 12) ? 0 : ((rightHandClock.hr == 12) ? rightHandClock.hr : rightHandClock.hr + 12));
+    }
+    else
+    {
+        cmpOH = rightHandClock.hr;
+    }
+
+    if (cmpH < cmpOH)
+    {
+        return true;
+    }
+    else if (cmpH == cmpOH)
+    {
+        if (this->min < rightHandClock.min)
+        {
+            return true;
+        }
+        else if (this->min == rightHandClock.min)
+        {
+            return this->sec < rightHandClock.sec;
+        }
+    }
+    return false;
 }
+
 bool clockType::operator>=(const clockType &rightHandClock) const
 {
+    return (*this > rightHandClock) || (*this == rightHandClock);
 }
+
 bool clockType::operator<=(const clockType &rightHandClock) const
 {
+    return (*this < rightHandClock) || (*this == rightHandClock);
 }
