@@ -5,6 +5,7 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
+#include <map>
 
 enum amPmType
 {
@@ -16,14 +17,14 @@ enum clockFormatType
     TWELVE = 12,
     TWENTYFOUR = 24
 };
-const amPmType times[] = {AM, PM};
-const clockFormatType formats[] = {TWELVE, TWENTYFOUR};
-const std::string amPmToStr[] = {"AM", "PM"};
-const std::string clockFormatToStr[] = {"12 hour clock", "24 hour clock"};
 
 class clockType
 {
 public:
+    static std::map<clockFormatType, std::string> clockFormatToStr;
+    static std::map<int, clockFormatType> intToClockFormat;
+    static std::map<amPmType, std::string> amPmToStr;
+    static std::map<std::string, amPmType> strToAmPmType;
     // clockType();
     clockType(int h = 0, int m = 0, int s = 0, std::string = "PM", clockFormatType = TWENTYFOUR);
     // clockType(int h, int m);

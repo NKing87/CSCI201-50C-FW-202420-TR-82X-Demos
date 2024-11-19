@@ -9,22 +9,7 @@
 clockType::clockType(int h, int m, int s, std::string am, clockFormatType f)
 {
     this->format = f;
-
-    std::transform(am.begin(), am.end(), am.begin(), ::toupper);
-    bool set = false;
-    for (int i = 0; i < 2; i++)
-    {
-        if (amPmToStr[i] == am)
-        {
-            timeOfDay = times[i];
-            set = true;
-        }
-    }
-    if (!set)
-    {
-        timeOfDay = times[1];
-    }
-    setTime(h, m, s);
+    setTime(h, m, s, am);
     count++;
 }
 void clockType::getTime(int &h, int &m, int &s) const
@@ -66,19 +51,15 @@ int clockType::count = 0;
 } */
 void clockType::setTime(int h, int m, int s, std::string a)
 {
-    std::transform(a.begin(), a.end(), a.begin(), ::toupper);
-    bool set = false;
-    for (int i = 0; i < 2; i++)
+    std::transform(a.begin(), a.end(), a.begin(), ::tolower);
+
+    if (strToAmPmType.count(a))
     {
-        if (amPmToStr[i] == a)
-        {
-            timeOfDay = times[i];
-            set = true;
-        }
+        timeOfDay = strToAmPmType[a];
     }
-    if (!set)
+    else
     {
-        timeOfDay = times[1];
+        timeOfDay = strToAmPmType["pm"];
     }
 
     if (format == TWENTYFOUR)
@@ -103,6 +84,7 @@ std::string clockType::tostring() const
     {
         outStr << " " << amPmToStr[timeOfDay];
     }
+    outStr << clockFormatToStr[format];
     return outStr.str();
 }
 
@@ -341,3 +323,10 @@ bool clockType::operator>=(const clockType &rightHandClock) const
 bool clockType::operator<=(const clockType &rightHandClock) const
 {
 }
+
+std::map<clockFormatType, std::string> clockType::clockFormatToStr = {{TWELVE, "12 hour clock"}, {TWENTYFOUR, "24 hour clock"}};
+
+std::map<int, clockFormatType> clockType::intToClockFormat = {{12, TWELVE}, {24, TWENTYFOUR}};
+
+std::map<amPmType, std::string> clockType::amPmToStr = {{AM, "AM"}, {PM, "PM"}};
+std::map<std::string, amPmType> clockType::strToAmPmType = {{"pm", PM}, {"am", AM}};
