@@ -4,11 +4,6 @@
 #include <algorithm>
 #include "clock.h"
 
-// change the main to loop and push into the clockInVector 15 random clocks
-//  use the code provided to randomly determine if it is a 12 or 24 hour clock
-// based on the format generate a value for hours, mins, secs
-// for 12 hour clocks ask the user if it is am or pm
-
 template <class comparableType>
 comparableType larger(comparableType num1, comparableType num2);
 bool codeGradeLoopFix(std::string errLocation);
@@ -36,43 +31,59 @@ double larger(double num1, double num2)
 int main()
 {
     std::vector<clockType> timeClockIn;
-    std::vector<clockType> timeClockOut;
-    int x, y;
-    double z, a;
-    std::default_random_engine generator;
-    std::uniform_real_distribution<double> distribution(0.0, 1.0);
-    std::uniform_int_distribution<int> distributionInt(1, 100);
-    z = distribution(generator);
-    a = distribution(generator);
-    x = distributionInt(generator);
-    y = distributionInt(generator);
-    std::uniform_int_distribution<int> distributionFormat(1, 2);
+    std::default_random_engine generator(std::random_device{}());
+    std::uniform_int_distribution<int> formatDistribution(1, 2); // 1 for 12-hour, 2 for 24-hour
+    std::uniform_int_distribution<int> hourDistribution12(1, 12); // Hours for 12-hour clock
+    std::uniform_int_distribution<int> hourDistribution24(0, 23); // Hours for 24-hour clock
+    std::uniform_int_distribution<int> minuteSecondDistribution(0, 59);
 
-    // goes into the new loop
-    int clockFormat = distributionFormat(generator) * 12;
-    clockFormatType format = clockType::intToClockFormat[clockFormat];
-
-    clockType c1(6, 30, 00, "PM", TWELVE), c2(18, 31, 00);
-    // timeClockIn.insert(timeClockIn.begin(), c1);//works but required the exact iterator position
-    // timeClockIn[0] = c1; doesn't work if the vector is empty
-    timeClockIn.push_back(c1);
-    // timeClockIn.insert(timeClockIn.end(), 15, c2);
-    for (int i = 0; i < timeClockIn.size(); i++)
+    for (int i = 0; i < 15; ++i)
     {
-        std::cout << timeClockIn[i] << std::endl;
+        int formatChoice = formatDistribution(generator);
+        int hours, minutes, seconds;
+        std::string amPm;
+
+        if (formatChoice == 1) // 12-hour clock
+        {
+            hours = hourDistribution12(generator);
+            minutes = minuteSecondDistribution(generator);
+            seconds = minuteSecondDistribution(generator);
+
+            std::cout << "For clock #" << i + 1 << ": Is it AM or PM? ";
+            std::cin >> amPm;
+
+            // Convert to uppercase for consistency
+            std::transform(amPm.begin(), amPm.end(), amPm.begin(), ::toupper);
+
+            while (amPm != "AM" && amPm != "PM")
+            {
+                std::cout << "Invalid input. Please enter AM or PM: ";
+                std::cin >> amPm;
+                std::transform(amPm.begin(), amPm.end(), amPm.begin(), ::toupper);
+            }
+
+            timeClockIn.emplace_back(hours, minutes, seconds, amPm, clockFormatType::TWELVE);
+        }
+        else // 24-hour clock
+        {
+            hours = hourDistribution24(generator);
+            minutes = minuteSecondDistribution(generator);
+            seconds = minuteSecondDistribution(generator);
+
+            timeClockIn.emplace_back(hours, minutes, seconds, clockFormatType::TWENTY_FOUR);
+        }
     }
 
-    int largerInt = larger(x, y);
-    std::cout << "The larger value is " << largerInt << " from x = " << x << " and y = " << y << std::endl;
+    // Display all generated clocks
+    std::cout << "\nGenerated Clocks:\n";
+    for (const auto &clock : timeClockIn)
+    {
+        std::cout << clock << std::endl;
+    }
 
-    double largerDouble = larger(z, a);
-    std::cout << "The larger value is " << largerDouble << " from z = " << z << " and a = " << a << std::endl;
-
-    clockType largerClock = larger(c1, c2);
-    std::cout << "The larger of c1 = " << c1 << " and c2 = " << c2 << " is " << largerClock << std::endl;
-    largerDouble = larger<double>(x, a);
     return 0;
 }
+
 
 template <class t>
 t larger(t num1, t num2)
