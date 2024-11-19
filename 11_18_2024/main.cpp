@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+#include <vector>
 #include "clock.h"
 
 template <class comparableType>
@@ -26,6 +27,8 @@ double larger(double num1, double num2)
  */
 int main()
 {
+    std::vector<clockType> timeClockIn;
+    std::vector<clockType> timeClockOut;
     int x, y;
     double z, a;
     std::default_random_engine generator;
@@ -37,6 +40,14 @@ int main()
     y = distributionInt(generator);
 
     clockType c1(6, 30, 00, "PM", TWELVE), c2(18, 31, 00);
+    // timeClockIn.insert(timeClockIn.begin(), c1);//works but required the exact iterator position
+    // timeClockIn[0] = c1; doesn't work if the vector is empty
+    timeClockIn.push_back(c1);
+    timeClockIn.insert(timeClockIn.end(), 15, c2);
+    for (int i = 0; i < timeClockIn.size(); i++)
+    {
+        std::cout << timeClockIn[i] << std::endl;
+    }
 
     int largerInt = larger(x, y);
     std::cout << "The larger value is " << largerInt << " from x = " << x << " and y = " << y << std::endl;
