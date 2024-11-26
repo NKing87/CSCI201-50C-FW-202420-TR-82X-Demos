@@ -59,15 +59,22 @@ void clockType::setTime(int h, int m, int s, std::string a)
     }
     else
     {
-        throw *this;
+        throw invalid_AmPmType(a);
     }
 
     if (format == TWENTYFOUR)
-        hr = h % 24;
+    {
+        if (h < 0 || h > 23)
+        {
+            throw invalid_Hour("The hour must be between 0 and 23.");
+        }
+        hr = h;
+    }
+
     else
     {
         if (h > 12 || h < 1)
-            hr = h % 12 + 1;
+            throw invalid_Hour("The hour must be between 1 and 12. ");
         else
             hr = h;
     }
@@ -84,7 +91,7 @@ std::string clockType::tostring() const
     {
         outStr << " " << amPmToStr[timeOfDay];
     }
-    outStr << clockFormatToStr[format];
+    outStr << " " << clockFormatToStr[format];
     return outStr.str();
 }
 
