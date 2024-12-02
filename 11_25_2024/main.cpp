@@ -67,26 +67,34 @@ int main()
             std::cout << *clock << std::endl;
             break;
         }
-        catch (invalid_AmPmType e)
+        catch (invalid_AmPmType &e)
         {
             std::cout << e.what() << std::endl;
             validTod = false;
             continue;
         }
-        catch (invalid_Hour e)
+        catch (invalid_Hour &e)
         {
             std::cout << e.what() << std::endl;
             validHr = false;
             continue;
         }
-        /* catch (...)
+        catch (invalid_Min &e)
         {
-            std::cout << "An error has occured. Program will exit." << std::endl;
-            return 0;
-        } */
+            std::cout << e.what() << std::endl;
+            validMin = false;
+            continue;
+        }
+        catch (invalid_Sec &e)
+        {
+            std::cout << e.what() << std::endl;
+            validSec = false;
+            continue;
+        }
     }
     return 0;
 }
+
 
 clockFormatType getFormat()
 {
