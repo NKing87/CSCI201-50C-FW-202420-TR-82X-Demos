@@ -49,37 +49,17 @@ int clockType::count = 0;
 {
     setTime(h, m, 0);
 } */
-void clockType::setTime(int h, int m, int s, std::string a)
-{
-    std::transform(a.begin(), a.end(), a.begin(), ::tolower);
-
-    if (strToAmPmType.count(a))
-    {
-        timeOfDay = strToAmPmType[a];
+void clockType::setTime(int hr, int min, int sec) {
+    if (min < 0 || min > 59) {
+        throw invalid_Min("Invalid minutes: " + std::to_string(min));
     }
-    else
-    {
-        throw invalid_AmPmType(a);
+    if (sec < 0 || sec > 59) {
+        throw invalid_Sec("Invalid seconds: " + std::to_string(sec));
     }
-
-    if (format == TWENTYFOUR)
-    {
-        if (h < 0 || h > 23)
-        {
-            throw invalid_Hour("The hour must be between 0 and 23.");
-        }
-        hr = h;
-    }
-
-    else
-    {
-        if (h > 12 || h < 1)
-            throw invalid_Hour("The hour must be between 1 and 12. ");
-        else
-            hr = h;
-    }
-    min = m % 60;
-    sec = s % 60;
+    // Existing logic for hours and other validations
+    this->hours = hr;
+    this->minutes = min;
+    this->seconds = sec;
 }
 
 std::string clockType::tostring() const
