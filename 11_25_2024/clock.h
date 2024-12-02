@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <map>
+#include <exception>
 #include "clockExcept.h"
 
 enum amPmType
@@ -64,4 +65,25 @@ private:
     bool equalTime(const clockType &) const;
     std::string tostring() const;
 };
+
+class invalid_Min : public std::exception {
+public:
+    explicit invalid_Min(const std::string &msg) : message(msg) {}
+    const char* what() const noexcept override {
+        return message.c_str();
+    }
+private:
+    std::string message;
+};
+
+class invalid_Sec : public std::exception {
+public:
+    explicit invalid_Sec(const std::string &msg) : message(msg) {}
+    const char* what() const noexcept override {
+        return message.c_str();
+    }
+private:
+    std::string message;
+};
+
 #endif
